@@ -1,25 +1,23 @@
 //
-//  HelloWorldLayer.m
-//  GameOfDoors
+//  Winning.m
+//  GOD
 //
-//  Created by DUCA on 7/19/12.
-//  Copyright __MyCompanyName__ 2012. All rights reserved.
+//  Created by DUCA on 7/27/12.
+//  Copyright 2012 __MyCompanyName__. All rights reserved.
 //
 
-// Import the interfaces
-#import "HelloWorldScene.h"
-#import "GamePlay.h"
-#import "GameOver.h"
 #import "Winning.h"
+#import "GamePlay.h"
+#import "HelloWorldScene.h"
 
-// HelloWorld implementation
-@implementation HelloWorld
+
+@implementation Winning
 
 +(id) scene{
 	CCScene *scene = [CCScene node];
 	
-	HelloWorld *layer = [HelloWorld node];
-
+	Winning *layer = [Winning node];
+	
 	
 	[scene addChild: layer];
 	
@@ -30,16 +28,22 @@
 	if( (self=[super init] )) {
 		self.isTouchEnabled = YES;
 		
-		CCSprite * bg = [CCSprite spriteWithFile:@"MainMenu.png"];
+		CCSprite * bg = [CCSprite spriteWithFile:@"Winning.png"];//make game over screen
 		bg.anchorPoint = ccp(0, 0);
 		[self addChild:bg z:-1];
 	}
 	return self;
 }
 
+-(void)rotate:(ccTime) dt{
+	[[CCDirector sharedDirector] setDeviceOrientation:CCDeviceOrientationPortrait];
+	[self unschedule:@selector(rotate:)];
+}
+
 -(void) start: (id) sender{
-	[[CCDirector sharedDirector] replaceScene:[CCTransitionZoomFlipAngular transitionWithDuration:1 scene:[GamePlay node]]];
-	//Send to GamePlay
+	[self schedule:@selector(rotate:) interval:0.5];
+	[[CCDirector sharedDirector] replaceScene:[CCTransitionZoomFlipAngular transitionWithDuration:1 scene:[HelloWorld node]]];
+	//Send to Menu
 }
 
 -(void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -58,4 +62,5 @@
 	// don't forget to call "super dealloc"
 	[super dealloc];
 }
+
 @end

@@ -9,12 +9,19 @@
 #import "GamePlay.h"
 #import "HelloWorldScene.h"
 #import "GameDoor.h"
+#import "GameOver.h"
+#import "Winning.h"
 
 @implementation GamePlay
 @synthesize player, doorType;
 @synthesize background;
 @synthesize doorHeight, backgroundDoor1, backgroundDoor2, backgroundDoor3;
 @synthesize doorOpen, clockImage, enterDoorButton;
+@synthesize heart1, heart2, heart3;
+@synthesize star1, star2, star3;
+@synthesize star, tornado;
+@synthesize doorImage1, doorImage2, doorImage3;
+@synthesize tagImage1, tagImage2, tagImage3;
 //check sound effects
 
 +(id) scene{
@@ -38,15 +45,62 @@
 		playerSpeed = 5.0;
 		areYouEnteringDoor = NO;
 		youAreClickingTheEnterDoorButton = NO;
+		movingLeft = NO;
+		movingRight = NO;
+		theresAnObjectInDoorway1 = NO;
+		theresAnObjectInDoorway2 = NO;
+		theresAnObjectInDoorway3 = NO;
+		theresATornado = NO;
+		theresDefinitelyATornado = NO;
+		deleteThatStuff = NO;
+		youJustLostALife = NO;
 		clock=1;
 		second=1;
 		hour=11;
+		starCount = 0;
+		tornadoTimer = 0;
+		tornadoSpeed = 2;
+		lives = 3;
 		/*
 		self.background = [CCSprite spriteWithFile:@"floor0.png"];
 		self.background.tag = 101;
 		self.background.anchorPoint = ccp(0,0);
 		[self addChild:self.background z:-1];
 		*/
+		
+		self.heart1 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart1.position = ccp(20,300);
+		self.heart1.tag = 801;
+		[self addChild:self.heart1];
+		
+		self.heart2 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart2.position = ccp(55,300);
+		self.heart2.tag = 802;
+		[self addChild:self.heart2];
+		
+		self.heart3 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart3.position = ccp (90,300);
+		self.heart3.tag = 803;
+		[self addChild:self.heart3];
+		
+		self.star1 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star1.position = ccp(20,275);
+		self.star1.tag = 804;
+		[self addChild:self.star1];
+		youHaveStar1 = YES;
+		
+		self.star2 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star2.position = ccp(55,275);
+		self.star2.tag = 805;
+		[self addChild:self.star2];
+		youHaveStar2 = YES;
+		
+		self.star3 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star3.position = ccp (90,275);
+		self.star3.tag = 806;
+		[self addChild:self.star3];
+		youHaveStar3 = YES;
+		
 		self.background = [CCSprite spriteWithFile:@"Backgroundfloor.png"];
 		self.background.anchorPoint = ccp(0,0);
 		[self addChild:self.background z:-2];
@@ -92,9 +146,56 @@
 				[self.doorType addObject:[NSString stringWithFormat:@"%d", 5]];
 			}
 			else {
-				[self.doorType addObject:[NSString stringWithFormat:@"%d", arc4random()%2+1]];
+				[self.doorType addObject:[NSString stringWithFormat:@"%d", 2]];
 			}
 		}
+		int starPosition1 = 1;
+		int starPosition2 = 1;
+		int starPosition3 = 1;
+		int starPosition4 = 1;
+		int starPosition5 = 1;
+		int starPosition6 = 1;
+		int starPosition7 = 1;
+		int starPosition8 = 1;
+		int starPosition9 = 1;
+		int starPosition10 = 1;
+		int starPosition11 = 1;
+		int starPosition12 = 1;
+		while (starPosition1 == starPosition2 || starPosition1 == starPosition3 || starPosition2 == starPosition3) {
+			starPosition1 = arc4random()%8;
+			starPosition2 = arc4random()%8;
+			starPosition3 = arc4random()%8;
+		}
+		while (starPosition4 == starPosition5 || starPosition4 == starPosition6 || starPosition5 == starPosition6) {
+			starPosition4 = arc4random()%7 + 10;
+			starPosition5 = arc4random()%7 + 10;
+			starPosition6 = arc4random()%7 + 10;
+		}
+		while (starPosition7 == starPosition8 || starPosition7 == starPosition9 || starPosition8 == starPosition9) {
+			starPosition7 = arc4random()%7 + 19;
+			starPosition8 = arc4random()%7 + 19;
+			starPosition9 = arc4random()%7 + 19;
+		}
+		while (starPosition10 == starPosition11 || starPosition10 == starPosition12 || starPosition11 == starPosition12) {
+			starPosition10 = arc4random()%7 + 28;
+			starPosition11 = arc4random()%7 + 28;
+			starPosition12 = arc4random()%7 + 28;
+		}
+		[self.doorType replaceObjectAtIndex:starPosition1 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition2 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition3 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition4 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition5 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition6 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition7 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition8 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition9 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition10 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition11 withObject:[NSString stringWithFormat:@"%d", 1]];
+		[self.doorType replaceObjectAtIndex:starPosition12 withObject:[NSString stringWithFormat:@"%d", 1]];
+		
+		[self.doorType replaceObjectAtIndex:35 withObject:[NSString stringWithFormat:@"%d", 6]];
+				
 		NSLog(@"%@", self.doorType);
 		
 		int t;
@@ -107,7 +208,7 @@
 				[self.doorHeight addObject:[NSString stringWithFormat:@"%d", arc4random()%3+1]];
 			}
 		}
-		NSLog(@"%@", self.doorHeight);
+		//NSLog(@"%@", self.doorHeight);
 		
 		int j;
 		self.doorOpen = [NSMutableArray array];
@@ -118,6 +219,16 @@
 	return self;
 }
 
+-(void) gameOver: (id) sender{
+	//[self performSelector: @selector(gameOver:) withObject:nil afterDelay:0.2];
+	[[CCDirector sharedDirector] replaceScene:[CCTransitionZoomFlipAngular transitionWithDuration:1 scene:[GameOver node]]];
+	//Send to Menu
+}
+
+-(void) winning: (id) sender{
+	[[CCDirector sharedDirector] replaceScene:[CCTransitionZoomFlipAngular transitionWithDuration:1 scene:[Winning node]]];
+}
+
 -(void)rotate:(ccTime) dt{
 	[[CCDirector sharedDirector] setDeviceOrientation:CCDeviceOrientationLandscapeLeft];
 	[self unschedule:@selector(rotate:)];
@@ -125,6 +236,7 @@
 
 -(void)replaceBackground:(ccTime) dt{
 	NSLog(@"background called");
+	whatRoomAmIAt = (Floor*9)+(Room*3);
 	/*
 	if (Floor == Floor1) {
 		if (Room == Room1) {
@@ -572,78 +684,159 @@
 			
 	}
 	
+	if ([[doorOpen objectAtIndex:whatRoomAmIAt] intValue] == 0) {
+		NSString *tagFile1 = [NSString stringWithFormat:@"%d0%d.png", Floor +1, Room*3 +1];
+		self.tagImage1 = [CCSprite spriteWithFile:tagFile1];
+		self.tagImage1.position = ccp(86,5*self.backgroundDoor1.position.y/4);
+		self.tagImage1.tag = 701;
+		[self addChild:self.tagImage1];
+	}
+	
+	if ([[doorOpen objectAtIndex:whatRoomAmIAt +1] intValue] == 0) {
+		NSString *tagFile2 = [NSString stringWithFormat:@"%d0%d.png", Floor +1, Room*3 +2];
+		self.tagImage2 = [CCSprite spriteWithFile:tagFile2];
+		self.tagImage2.position = ccp(234,5*self.backgroundDoor2.position.y/4);
+		self.tagImage2.tag = 702;
+		[self addChild:self.tagImage2];
+	}
+	if ([[doorOpen objectAtIndex:whatRoomAmIAt +2] intValue] == 0){
+		NSString *tagFile3 = [NSString stringWithFormat:@"%d0%d.png", Floor +1, Room*3 +3];
+		self.tagImage3 = [CCSprite spriteWithFile:tagFile3];
+		self.tagImage3.position = ccp(395,5*self.backgroundDoor3.position.y/4);
+		self.tagImage3.tag = 703;
+		[self addChild:self.tagImage3];
+	}
 	[self unschedule:@selector(replaceBackground:)];
 }
 
 -(void) enterDoor:(ccTime) dt{
 	//NSLog(@"enterDoor called");
+	whatRoomAmIAt = (Floor*9)+(Room*3);
+	if (Door == Door1) {
+		door1Timer = 0;
+	}
+	if (Door == Door2) {
+		door2Timer = 0;
+	}
+	if (Door == Door3) {
+		door3Timer = 0;
+	}
 	
 	int mySwitch = [[self.doorType objectAtIndex:(whatDoorAmIAt)] intValue];
 	
 	switch (mySwitch) {
 		case 1:
-			NSLog(@"Bad Door");
-			if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 0) {
-				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"1"];
-				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-open.mp3"];
-			}
-			else if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 1) {
-				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"0"];
-				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-close.mp3"];
-			}
-			[self removeChildByTag:101 cleanup:YES];
-			[self removeChildByTag:102 cleanup:YES];
-			[self removeChildByTag:103 cleanup:YES];
-			[self schedule:@selector(replaceBackground:) interval:0.0];
-			break;
-		case 2:
 			NSLog(@"Good Door");
 			if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 0) {
 				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"1"];
+				starCount++;
 				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-open.mp3"];
 			}
-			else if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 1) {
+			//add the ability to close doors
+			/*else if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 1) {
 				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"0"];
 				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-close.mp3"];
-			}
+			}*/
 			[self removeChildByTag:101 cleanup:YES];
 			[self removeChildByTag:102 cleanup:YES];
 			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
 			[self schedule:@selector(replaceBackground:) interval:0.0];
+			break;
+		case 2:
+			NSLog(@"Bad Door");
+			if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 0) {
+				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"1"];
+				theresATornado = YES;
+				tornadoTimer = 0;
+				tornadoX = -100;
+				tornadoY = 75;
+				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-open.mp3"];
+			}
+			//adds the ability to close doors
+			/*else if ([[self.doorOpen objectAtIndex:whatDoorAmIAt] intValue] == 1) {
+				[self.doorOpen replaceObjectAtIndex:whatDoorAmIAt withObject:@"0"];
+				//[[SimpleAudioEngine sharedEngine] playEffect:@"door-3-close.mp3"];
+			}*/
+			
+			[self removeChildByTag:101 cleanup:YES];
+			[self removeChildByTag:102 cleanup:YES];
+			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
+			[self schedule:@selector(replaceBackground:) interval:0.0];
+			
+			
+			
 			break;
 		case 3:
 			NSLog(@"Game Door");
 			break;
 		case 4:
 			NSLog(@"Stairs Up");
-			Floor++;
-			Room = Room1;
-			
-			self.player.position = ccp(86, self.player.position.y);
-			[self removeChildByTag:101 cleanup:YES];
-			[self removeChildByTag:102 cleanup:YES];
-			[self removeChildByTag:103 cleanup:YES];
-			[self schedule:@selector(replaceBackground:) interval:0.0];
+			if (starCount >= (Floor*3)+3 && theresATornado == NO) {
+				Floor++;
+				Room = Room1;
+				
+				self.player.position = ccp(86, self.player.position.y);
+				[self removeChildByTag:101 cleanup:YES];
+				[self removeChildByTag:102 cleanup:YES];
+				[self removeChildByTag:103 cleanup:YES];
+				[self removeChildByTag:701 cleanup:YES];
+				[self removeChildByTag:702 cleanup:YES];
+				[self removeChildByTag:703 cleanup:YES];
+				[self schedule:@selector(replaceBackground:) interval:0.0];
+			}
 			break;
 		case 5:
 			NSLog(@"Stairs Down");
-			Floor--;
-			Room = Room3;
-			
-			self.player.position = ccp(395, self.player.position.y);
-			[self removeChildByTag:101 cleanup:YES];
-			[self removeChildByTag:102 cleanup:YES];
-			[self removeChildByTag:103 cleanup:YES];
-			[self schedule:@selector(replaceBackground:) interval:0.0];
+			if (theresATornado == NO) {
+				Floor--;
+				Room = Room3;
+				
+				self.player.position = ccp(395, self.player.position.y);
+				[self removeChildByTag:101 cleanup:YES];
+				[self removeChildByTag:102 cleanup:YES];
+				[self removeChildByTag:103 cleanup:YES];
+				[self removeChildByTag:701 cleanup:YES];
+				[self removeChildByTag:702 cleanup:YES];
+				[self removeChildByTag:703 cleanup:YES];
+				[self schedule:@selector(replaceBackground:) interval:0.0];
+			}
 			break;
 		case 6:
 			NSLog(@"You Win");
+			if (starCount == 12) {
+				[self performSelector: @selector(winning:) withObject:nil afterDelay:0.2];
+			}
 			break;
 		default:
 			break;
 	}
+		
 	areYouEnteringDoor = NO;
 	[self unschedule:@selector(enterDoor:)];
+}
+
+-(void) goodDoor:(ccTime) dt{
+	/*self.star = [CCSprite spriteWithFile:@"Star.png"];
+	self.star.tag = 998;
+	if (Door == Door1) {
+		self.star.position = ccp();
+	}
+	else if (Door == Door2) {
+		self.star.position = ccp();
+	}
+	else if (Door == Door3) {
+		self.star.position = ccp();
+	}
+	[self addChild:self.star];*/
+}
+
+-(void) badDoor:(ccTime) dt{
 }
 
 -(BOOL) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -676,6 +869,8 @@
 	[self schedule:@selector(standing_animation:) interval:0.2];
 	timer = 0;
 	youAreClickingTheEnterDoorButton = NO;
+	movingLeft = NO;
+	movingRight = NO;
 	return YES;
 }
 
@@ -696,6 +891,7 @@
 		Door = NoDoor;
 	}
 	whatDoorAmIAt = (Floor*9)+(Room*3)+Door-1;
+	whatRoomAmIAt = (Floor*9)+(Room*3);
 	clock++;
 	if (clock%60 == 0) {
 		second++;
@@ -703,6 +899,147 @@
 	if (clock%(12*60)==0) {
 		hour++;
 	}
+
+	if (theresAnObjectInDoorway1 == YES) {
+		[self removeChildByTag:901 cleanup:YES];
+		theresAnObjectInDoorway1 = NO;
+	}
+	if (theresAnObjectInDoorway2 == YES) {
+		[self removeChildByTag:902 cleanup:YES];
+		theresAnObjectInDoorway2 = NO;
+	}
+	if (theresAnObjectInDoorway3) {
+		[self removeChildByTag:903 cleanup:YES];
+		theresAnObjectInDoorway3 = NO;
+	}
+	int t;
+	for (t=0; t<3; t++) {
+		if (t == 0 && door1Timer < 60) {
+			if ([[doorOpen objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+				if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+					self.doorImage1 = [CCSprite spriteWithFile:@"Star.png"];
+				}
+				else if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 2){
+					self.doorImage1 = [CCSprite spriteWithFile:@"Tornado.png"];
+				}
+				self.doorImage1.position = ccp(86,100);
+				self.doorImage1.tag = 901;
+				[self addChild:self.doorImage1];
+				theresAnObjectInDoorway1 = YES;
+				door1Timer++;
+			}
+		}
+		if (t == 1 && door2Timer < 60) {
+			if ([[doorOpen objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+				if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+					self.doorImage2 = [CCSprite spriteWithFile:@"Star.png"];
+				}
+				else if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 2){
+					self.doorImage2 = [CCSprite spriteWithFile:@"Tornado.png"];
+				}
+				self.doorImage2.position = ccp(234,100);
+				self.doorImage2.tag = 902;
+				[self addChild:self.doorImage2];
+				theresAnObjectInDoorway2 = YES;
+				door2Timer++;
+			}
+		}
+		if (t == 2 && door3Timer < 60) {
+			if ([[doorOpen objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+				if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 1) {
+					self.doorImage3 = [CCSprite spriteWithFile:@"Star.png"];
+				}
+				else if ([[doorType objectAtIndex:whatRoomAmIAt+t] intValue] == 2){
+					self.doorImage3 = [CCSprite spriteWithFile:@"Tornado.png"];
+				}
+				self.doorImage3.position = ccp(395,100);
+				self.doorImage3.tag = 903;
+				[self addChild:self.doorImage3];
+				theresAnObjectInDoorway3 = YES;
+			}
+			door3Timer++;
+		}
+	}
+	
+	if (youHaveStar1 == YES) {
+		[self removeChildByTag:804 cleanup:YES];
+		youHaveStar1 = NO;
+	}
+	if (youHaveStar2 == YES) {
+		[self removeChildByTag:805 cleanup:YES];
+		youHaveStar2 = NO;
+	}
+	if (youHaveStar3) {
+		[self removeChildByTag:806 cleanup:YES];
+		youHaveStar3 = NO;
+	}
+	
+	if (starCount >= (Floor*3)+1) {
+		self.star1 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star1.position = ccp(20,275);
+		self.star1.tag = 804;
+		[self addChild:self.star1];
+		youHaveStar1 =	YES;
+	}
+	
+	if (starCount >= (Floor*3)+2) {
+		self.star2 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star2.position = ccp(55,275);
+		self.star2.tag = 805;
+		[self addChild:self.star2];
+		youHaveStar2 = YES;
+	}
+	
+	if (starCount >= (Floor*3)+3) {
+		self.star3 = [CCSprite spriteWithFile:@"StarSmall.png"];
+		self.star3.position = ccp (90,275);
+		self.star3.tag = 806;
+		[self addChild:self.star3];
+		youHaveStar3 = YES;
+	}
+	[self removeChildByTag:801 cleanup:YES];
+	[self removeChildByTag:802 cleanup:YES];
+	[self removeChildByTag:803 cleanup:YES];
+	
+	if (lives >= 1) {
+		self.heart1 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart1.position = ccp(20,300);
+		self.heart1.tag = 801;
+		[self addChild:self.heart1];
+	}
+	else {
+		self.heart1 = [CCSprite spriteWithFile:@"Blackheart.png"];
+		self.heart1.position = ccp(20,300);
+		self.heart1.tag = 801;
+		[self addChild:self.heart1];
+	}
+
+	if (lives >= 2) {
+		self.heart2 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart2.position = ccp(55,300);
+		self.heart2.tag = 802;
+		[self addChild:self.heart2];
+	}
+	else {
+		self.heart2 = [CCSprite spriteWithFile:@"Blackheart.png"];
+		self.heart2.position = ccp(55,300);
+		self.heart2.tag = 802;
+		[self addChild:self.heart2];
+	}
+
+	if (lives == 3) {
+		self.heart3 = [CCSprite spriteWithFile:@"redheart.png"];
+		self.heart3.position = ccp (90,300);
+		self.heart3.tag = 803;
+		[self addChild:self.heart3];
+	}
+	else {
+		self.heart3 = [CCSprite spriteWithFile:@"Blackheart.png"];
+		self.heart3.position = ccp (90,300);
+		self.heart3.tag = 803;
+		[self addChild:self.heart3];
+	}
+
 	
 	self.enterDoorButton = [CCSprite spriteWithFile:@"Enterdoor.png"];
 	self.enterDoorButton.tag = 999;
@@ -717,10 +1054,77 @@
 	self.clockImage.tag = 1000;
 	[self addChild:self.clockImage z:0];
 	
+	
+	//tornado
+	tornadoTimerMax = (Floor+1)*300;
+	if (theresDefinitelyATornado == YES) {
+		if (tornadoTimer%2 == 1) {
+			[self removeChildByTag:555 cleanup:YES];
+		}
+		if (tornadoTimer%2 == 0) {
+			[self removeChildByTag:556 cleanup:YES];
+		}
+		if (deleteThatStuff == YES) {
+			theresATornado = NO;
+			theresDefinitelyATornado = NO;
+			deleteThatStuff = NO;
+			youJustLostALife = NO;
+			[self removeChildByTag:555 cleanup:YES];
+			[self removeChildByTag:556 cleanup:YES];
+		}
+		
+	}
+	
+	if (theresATornado == YES) {
+		NSLog(@"tornado timer %d", tornadoTimer);
+		theresDefinitelyATornado = YES;
+		if (tornadoTimer%2 == 0) {
+			self.tornado = [CCSprite spriteWithFile:@"Tornado.png"];
+			self.tornado.position = ccp(tornadoX,tornadoY);
+			self.tornado.tag = 555;
+			[self addChild:self.tornado];
+		}
+		if (tornadoTimer%2 == 1) {
+			self.tornado = [CCSprite spriteWithFile:@"Tornado2.png"];
+			self.tornado.position = ccp(tornadoX,tornadoY);
+			self.tornado.tag = 556;
+			[self addChild:self.tornado];
+		}
+		
+		if (tornadoTimer <= tornadoTimerMax) {
+			if (self.player.position.x > self.tornado.position.x) {
+				tornadoX += tornadoSpeed;
+			}
+			if (self.player.position.x < self.tornado.position.x) {
+				tornadoX -= tornadoSpeed;
+			}
+		}
+		
+		if (tornadoTimer > tornadoTimerMax) {
+			tornadoX += tornadoSpeed;
+			if (self.tornado.position.x > winWidth +20) {
+				deleteThatStuff = YES;
+			}
+		}
+		float xDif = player.position.x - tornado.position.x;
+		float yDif = player.position.y - tornado.position.y;
+		float distance = sqrtf(xDif*xDif+yDif*yDif);
+		if (distance < 30 && youJustLostALife == NO) {
+			lives --;
+			youJustLostALife = YES;
+			tornadoTimer = tornadoTimerMax;
+		}
+		tornadoTimer++;
+	}
+	
+	//gameOver
+	if (lives == 0) {
+		[self performSelector: @selector(gameOver:) withObject:nil afterDelay:0.2];
+	}
 }
 
 -(void) moveSprite:(ccTime) dt{
-	if (x > 415 && x < 475 && y < 315 && y > 285 && Door != NoDoor) {
+	if (x > 415 && x < 475 && y < 315 && y > 285 && Door != NoDoor && theresATornado == NO) {
 		youAreClickingTheEnterDoorButton = YES;
 		areYouEnteringDoor = YES;
 	}
@@ -746,37 +1150,57 @@
 		anotherTimer++;
 	}	
 	if (Room != Room3 && Room != Room1){
-		if ((self.player.position.x + self.player.contentSize.width/4) > winWidth) {
+		if ((self.player.position.x + self.player.contentSize.width/4) > winWidth && theresATornado == NO) {
 			Room++;
 		
 			self.player.position = ccp(self.player.contentSize.width/4, self.player.position.y);
 			[self removeChildByTag:101 cleanup:YES];
 			[self removeChildByTag:102 cleanup:YES];
 			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
 			[self schedule:@selector(replaceBackground:) interval:0.0];
 		}
-		if ((self.player.position.x - self.player.contentSize.width/4) < 0) {
+		if ((self.player.position.x - self.player.contentSize.width/4) < 0 && theresATornado == NO) {
 			Room--;
 							
 			self.player.position = ccp(winWidth - self.player.contentSize.width/4, self.player.position.y);
 			[self removeChildByTag:101 cleanup:YES];
 			[self removeChildByTag:102 cleanup:YES];
 			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
 			[self schedule:@selector(replaceBackground:) interval:0.0];
 		}
 		
 		if (x < winWidth/2 - 80) //self.player.position.x) 
 		{
-			self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+			if (theresATornado == YES && self.player.position.x - self.player.contentSize.height/4 > 0) {
+				self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+				movingLeft = YES;
+			}
+			if (theresATornado == NO) {
+				self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+				movingLeft = YES;
+			}
 		}
 	
 		if (x > winWidth/2 + 80 && youAreClickingTheEnterDoorButton == NO) //self.player.position.x) 
 		{
-			self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+			if (theresATornado == YES && self.player.position.x + self.player.contentSize.height/4 < winWidth) {
+				self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+				movingRight = YES;
+			}
+			if (theresATornado == NO) {
+				self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+				movingRight = YES;
+			}
 		}
 	}
 	if (Room == Room3) {
-		if (self.player.position.x - self.player.contentSize.width/4 < 0) {
+		if (self.player.position.x - self.player.contentSize.width/4 < 0 && theresATornado == NO) {
 			
 			Room--;
 			
@@ -784,20 +1208,31 @@
 			[self removeChildByTag:101 cleanup:YES];
 			[self removeChildByTag:102 cleanup:YES];
 			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
 			[self schedule:@selector(replaceBackground:) interval:0.0];
 		}		
-		if (x < winWidth/2 - 80) //self.player.position.x) 
+		if (x < winWidth/2 - 80) 
 		{
-			self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+			if (theresATornado == YES && self.player.position.x - self.player.contentSize.height/4 > 0) {
+				self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+				movingLeft = YES;
+			}
+			if (theresATornado == NO) {
+				self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+				movingLeft = YES;
+			}
 		}
 		if (x > winWidth/2 + 80 && self.player.position.x + self.player.contentSize.height/4 < winWidth && youAreClickingTheEnterDoorButton == NO) 
 		{
 			self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+			movingRight = YES;
 		}
 		
 	}
 	if (Room == Room1) {
-		if (self.player.position.x + self.player.contentSize.width/4 > winWidth) {
+		if (self.player.position.x + self.player.contentSize.width/4 > winWidth && theresATornado == NO) {
 			
 			Room++;
 			
@@ -805,15 +1240,26 @@
 			[self removeChildByTag:101 cleanup:YES];
 			[self removeChildByTag:102 cleanup:YES];
 			[self removeChildByTag:103 cleanup:YES];
+			[self removeChildByTag:701 cleanup:YES];
+			[self removeChildByTag:702 cleanup:YES];
+			[self removeChildByTag:703 cleanup:YES];
 			[self schedule:@selector(replaceBackground:) interval:0.0];
 		}		
 		if (x < winWidth/2 - 80 && self.player.position.x - self.player.contentSize.height/4 > 0) 
 		{
 			self.player.position = ccp(self.player.position.x - playerSpeed, self.player.position.y);
+			movingLeft = YES;
 		}
 		if (x > winWidth/2 + 80 && youAreClickingTheEnterDoorButton == NO) 
 		{
-			self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+			if (theresATornado == YES && self.player.position.x + self.player.contentSize.height/4 < winWidth) {
+				self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+				movingRight = YES;
+			}
+			if (theresATornado == NO) {
+				self.player.position = ccp(self.player.position.x + playerSpeed, self.player.position.y);
+				movingRight = YES;
+			}
 		}
 	}
 }
@@ -976,28 +1422,29 @@
 	//NSLog(@"standing animation");
 	timer++;
 	timer = timer % 2;
-	
-	playerX = self.player.position.x;
-	playerY = self.player.position.y;
-	switch (timer) {
-		case 0:
-			self.player = [CCSprite spriteWithFile:@"Standing.png"];
-			player.position = ccp(playerX,playerY);
-			player.tag = 1;
-			[self addChild:self.player z:10];
-			break;
-		case 1:
-			self.player = [CCSprite spriteWithFile:@"Standing2.png"];
-			player.position = ccp(playerX,playerY);
-			player.tag = 22;
-			[self addChild:self.player z:10];
-			break;
-		default:
-			break;
+	if (youAreCurrentlyJumping == NO) {
+		playerX = self.player.position.x;
+		playerY = self.player.position.y;
+		switch (timer) {
+			case 0:
+				self.player = [CCSprite spriteWithFile:@"Standing.png"];
+				player.position = ccp(playerX,playerY);
+				player.tag = 1;
+				[self addChild:self.player z:10];
+				break;
+			case 1:
+				self.player = [CCSprite spriteWithFile:@"Standing2.png"];
+				player.position = ccp(playerX,playerY);
+				player.tag = 22;
+				[self addChild:self.player z:10];
+				break;
+			default:
+				break;
+		}
+		
+		[self removeChildByTag:playerTag cleanup:YES];
+		playerTag = self.player.tag;
 	}
-	
-	[self removeChildByTag:playerTag cleanup:YES];
-	playerTag = self.player.tag;
 }
 
 -(void) jump_animation{
@@ -1008,7 +1455,15 @@
 	float yCoordinate = (498.2)*(jumptime/60)-(428.75)*(jumptime/60)*(jumptime/60);
 	NSLog(@"yCoordinate = %f", yCoordinate);
 	[self removeChildByTag:playerTag cleanup:YES];
-	self.player = [CCSprite spriteWithFile:@"Standing.png"]; //need a jumping image
+	if (movingRight == YES) {
+		self.player = [CCSprite spriteWithFile:@"JumpingRight.png"];
+	}
+	else if (movingLeft == YES){
+		self.player = [CCSprite spriteWithFile:@"JumpingLeft.png"];
+	}
+	else if (movingLeft == NO && movingRight == NO){
+		self.player = [CCSprite spriteWithFile:@"JumpingUp.png"];
+	}
 	self.player.tag = 23;
 	self.player.position = ccp(myX, myY + yCoordinate);
 	[self addChild:self.player z:10];
@@ -1032,6 +1487,22 @@
 	[doorOpen release];
 	[clockImage release];
 	[enterDoorButton release];
+	[heart1 release];
+	[heart2 release];
+	[heart3 release];
+	[star release];
+	[tornado release];
+	[doorImage1 release];
+	[doorImage2 release];
+	[doorImage3 release];
+	[tagImage1 release];
+	[tagImage2 release];
+	[tagImage3 release];
+	[star1 release];
+	[star2 release];
+	[star3 release];
+		
+	[super dealloc];
 }
 
 @end
