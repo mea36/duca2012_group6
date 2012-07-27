@@ -111,10 +111,12 @@
 		self.enterDoorButton.position = ccp(445,295);
 		[self addChild:self.enterDoorButton z:0];
 		
+        /*
 		self.clockImage = [CCSprite spriteWithFile:@"Clock_1-00.png"];
 		self.clockImage.position = ccp(winWidth/2,260);
 		self.clockImage.tag = 1000;
 		[self addChild:self.clockImage z:0];
+         */
 		
 		self.isTouchEnabled = YES;
 		
@@ -1045,7 +1047,7 @@
 	self.enterDoorButton.tag = 999;
 	self.enterDoorButton.position = ccp(445,295);
 	[self addChild:self.enterDoorButton z:0];
-	
+	/*
 	//NSString *seconds = (String)second;
 	//clock
 	NSString *clockFile = [NSString stringWithFormat:@"Clock_%d-%d.png", hour%12 +1, (second-1)%12*5];
@@ -1053,6 +1055,7 @@
 	self.clockImage.position = ccp(winWidth/2,260);
 	self.clockImage.tag = 1000;
 	[self addChild:self.clockImage z:0];
+     */
 	
 	
 	//tornado
@@ -1455,6 +1458,7 @@
 	float yCoordinate = (498.2)*(jumptime/60)-(428.75)*(jumptime/60)*(jumptime/60);
 	NSLog(@"yCoordinate = %f", yCoordinate);
 	[self removeChildByTag:playerTag cleanup:YES];
+    /*
 	if (movingRight == YES) {
 		self.player = [CCSprite spriteWithFile:@"JumpingRight.png"];
 	}
@@ -1462,8 +1466,9 @@
 		self.player = [CCSprite spriteWithFile:@"JumpingLeft.png"];
 	}
 	else if (movingLeft == NO && movingRight == NO){
-		self.player = [CCSprite spriteWithFile:@"JumpingUp.png"];
+		//self.player = [CCSprite spriteWithFile:@"JumpingUp.png"];
 	}
+     */
 	self.player.tag = 23;
 	self.player.position = ccp(myX, myY + yCoordinate);
 	[self addChild:self.player z:10];
